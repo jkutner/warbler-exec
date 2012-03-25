@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+
+path_to_war = ARGV.shift 
+
+#ENV['GEM_HOME'] = 
+
+# setup gem_home/gem_path
+# setup classpath
+
+# explode war
+# if Gemfile
+#    run bundle install --binstubs
+#    add bin to PATH
+
+
+begin
+  Kernel.exec("jar","xf", path_to_war)
+  #Kernel.exec(*ARGV)
+rescue Errno::EACCES
+  puts "warbler-exec: not executable: #{ARGV.first}"
+  exit 126
+rescue Errno::ENOENT
+  puts "warbler-exec: command not found: #{ARGV.first}"
+  exit 127
+rescue ArgumentError
+  puts "warbler-exec: exec needs a command to run"
+  exit 128
+end
+
+

@@ -1,21 +1,25 @@
 #!/usr/bin/env ruby
 
+require 'zip/zip'
+require 'tmpdir'
+
 path_to_war = ARGV.shift 
 
-#ENV['GEM_HOME'] = 
+destination = Dir.mktmpdir
+Zip::ZipFile.open(path_to_war) do |zipfile|
+  zipfile.each do |f|
+    f_path = File.join(destination, f.name)
+    FileUtils.mkdir_p(File.dirname(f_path))
+    file.extract(f, f_path)
+  end
+end
 
-# setup gem_home/gem_path
-# setup classpath
-
-# explode war
-# if Gemfile
-#    run bundle install --binstubs
-#    add bin to PATH
-
+Dir.chdir(File.join(destination, "WEB-INF"))
+ENV["CLASSPATH"] = Dir["#{Dir.pwd}/lib/*.jar"].join(":")
+ENV["GEM_PATH"] = "#{Dir.pwd}/gems"
 
 begin
-  Kernel.exec("jar","xf", path_to_war)
-  #Kernel.exec(*ARGV)
+  Kernel.exec("java -Xmx512m -cp $CLASSPATH org.jruby.Main #{ARGV.join(" ")}")
 rescue Errno::EACCES
   puts "warbler-exec: not executable: #{ARGV.first}"
   exit 126

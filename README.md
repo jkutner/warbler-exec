@@ -23,6 +23,8 @@ Then run Bundler the with `--binstubs` option, and use `warbler-exec` to run the
     $ gem install warbler-exec
     $ warbler-exec myapp.war bin/rake db:migrate
 
+Every time that `warbler-exec` runs, it extracts the WAR file. Don't expect it to be fast.
+
 # Roadmap
 
 It would be a lot easier if we didn't have to run Bundler with the `--binstubs` option.  Eventually, someone (probably the person writing this) will submit a patch to Warbler that gets around this.

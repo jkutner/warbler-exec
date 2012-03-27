@@ -27,5 +27,7 @@ Every time that `warbler-exec` runs, it extracts the WAR file. Don't expect it t
 
 # Roadmap
 
-It would be a lot easier if we didn't have to run Bundler with the `--binstubs` option.  Eventually, someone (probably the person writing this) will submit a patch to Warbler that gets around this.
++  It would be a lot easier if we didn't have to run Bundler with the `--binstubs` option.  Eventually, someone (probably the person writing this) will submit a patch to Warbler that gets around this.
+
++  It would be better if we didn't have to extract the WAR file every time.  That's easy enough to do, but i'm not sure how it would look from the command line.  Would there be a special command to extract the WAR to a particular location? 
 

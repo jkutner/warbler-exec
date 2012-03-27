@@ -25,7 +25,7 @@ Then run Bundler the with `--binstubs` option, and use `warbler-exec` to run the
 
 Every time that `warbler-exec` runs, it extracts the WAR file. Don't expect it to be fast.
 
-# Wait! I need Ruby installed to run the Ruby in my WAR?
+## Wait! I need Ruby installed to run the Ruby in my WAR?
 
 Yes, you'll need a Ruby runtime installed on your machine in order to run this Gem (even though it switches to the Ruby inside your WAR file).  There are a few reasons for this:
 
@@ -37,7 +37,7 @@ Yes, you'll need a Ruby runtime installed on your machine in order to run this G
 
 +  Eventually, this tool will support more advanced options; such as exploding the WAR file once and running multiple commands.  Use Ruby for this will be much nicer than the alternatives.
 
-# Roadmap
+## Roadmap
 
 +  It would be a lot easier if we didn't have to run Bundler with the `--binstubs` option.  Eventually, someone (probably the person writing this) will submit a patch to Warbler that gets around this.
 

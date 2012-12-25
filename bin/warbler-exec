@@ -15,12 +15,12 @@ Zip::ZipFile.open(path_to_war) do |zipfile|
 end
 
 Dir.chdir(File.join(destination, "WEB-INF"))
-ENV["CLASSPATH"] = Dir["#{Dir.pwd}/lib/*.jar"].join(":")
+ENV["CLASSPATH"] = Dir["#{Dir.pwd}/lib/*.jar"].join(File::PATH_SEPARATOR)
 ENV["GEM_PATH"] = "#{Dir.pwd}/gems"
 ENV["GEM_HOME"] = "#{Dir.pwd}/gems"
 
-begin
-  Kernel.exec("java -Xmx512m -cp $CLASSPATH org.jruby.Main #{ARGV.join(" ")}")
+begin 
+  Kernel.exec("java -Xmx512m -cp #{ENV["CLASSPATH"]} org.jruby.Main #{ARGV.join(" ")}")
 rescue Errno::EACCES
   puts "warbler-exec: not executable: #{ARGV.first}"
   exit 126

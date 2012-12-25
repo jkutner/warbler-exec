@@ -30,7 +30,7 @@ begin
     cmd = "java -Xmx512m -cp %CLASSPATH% org.jruby.Main #{ARGV.join(" ")}"
     # work around http://jira.codehaus.org/browse/JRUBY-6994 which makes Kernel.exec forget about chdir
     if defined?(JRUBY_VERSION) && JRUBY_VERSION < "1.7.1"
-      cmd = "cd #{workdir} #{cmd}"
+      cmd = "cd #{workdir} & #{cmd}"
     end
   end
 

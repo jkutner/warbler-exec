@@ -2,6 +2,7 @@
 
 require 'zip/zip'
 require 'tmpdir'
+require 'rbconfig'
 
 path_to_war = ARGV.shift 
 
@@ -14,13 +15,26 @@ Zip::ZipFile.open(path_to_war) do |zipfile|
   end
 end
 
-Dir.chdir(File.join(destination, "WEB-INF"))
-ENV["CLASSPATH"] = Dir["#{Dir.pwd}/lib/*.jar"].join(":")
+workdir = File.join(destination, "WEB-INF") 
+Dir.chdir(workdir)
+
+ENV["CLASSPATH"] = Dir["#{Dir.pwd}/lib/*.jar"].join(File::PATH_SEPARATOR)
 ENV["GEM_PATH"] = "#{Dir.pwd}/gems"
 ENV["GEM_HOME"] = "#{Dir.pwd}/gems"
 
-begin
-  Kernel.exec("java -Xmx512m -cp $CLASSPATH org.jruby.Main #{ARGV.join(" ")}")
+begin 
+  # the unix way is the default way
+  cmd = "java -Xmx512m -cp $CLASSPATH org.jruby.Main #{ARGV.join(" ")}"
+  
+  if /mswin/ =~ RbConfig::CONFIG["host_os"]
+    cmd = "java -Xmx512m -cp %CLASSPATH% org.jruby.Main #{ARGV.join(" ")}"
+    # work around http://jira.codehaus.org/browse/JRUBY-6994 which makes Kernel.exec forget about chdir
+    if defined?(JRUBY_VERSION) && JRUBY_VERSION < "1.7.1"
+      cmd = "cd #{workdir} & #{cmd}"
+    end
+  end
+
+  Kernel.exec(cmd)
 rescue Errno::EACCES
   puts "warbler-exec: not executable: #{ARGV.first}"
   exit 126
@@ -30,6 +44,6 @@ rescue Errno::ENOENT
 rescue ArgumentError
   puts "warbler-exec: exec needs a command to run"
   exit 128
-end
+end 
 
 

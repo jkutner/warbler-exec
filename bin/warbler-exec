@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby
 
-require 'zip/zip'
 require 'tmpdir'
 require 'rbconfig'
+require 'zip'
 
-path_to_war = ARGV.shift 
+path_to_war = ARGV.shift
 
 destination = Dir.mktmpdir
-Zip::ZipFile.open(path_to_war) do |zipfile|
+Zip::File.open(path_to_war) do |zipfile|
   zipfile.each do |f|
     f_path = File.join(destination, f.name)
     FileUtils.mkdir_p(File.dirname(f_path))
@@ -15,17 +15,17 @@ Zip::ZipFile.open(path_to_war) do |zipfile|
   end
 end
 
-workdir = File.join(destination, "WEB-INF") 
+workdir = File.join(destination, "WEB-INF")
 Dir.chdir(workdir)
 
 ENV["CLASSPATH"] = Dir["#{Dir.pwd}/lib/*.jar"].join(File::PATH_SEPARATOR)
 ENV["GEM_PATH"] = "#{Dir.pwd}/gems"
 ENV["GEM_HOME"] = "#{Dir.pwd}/gems"
 
-begin 
+begin
   # the unix way is the default way
   cmd = "java -Xmx512m -cp $CLASSPATH org.jruby.Main #{ARGV.join(" ")}"
-  
+
   if /mswin/ =~ RbConfig::CONFIG["host_os"]
     cmd = "java -Xmx512m -cp %CLASSPATH% org.jruby.Main #{ARGV.join(" ")}"
     # work around http://jira.codehaus.org/browse/JRUBY-6994 which makes Kernel.exec forget about chdir
@@ -44,6 +44,4 @@ rescue Errno::ENOENT
 rescue ArgumentError
   puts "warbler-exec: exec needs a command to run"
   exit 128
-end 
-
-
+end
